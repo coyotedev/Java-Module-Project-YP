@@ -1,6 +1,7 @@
 import static java.lang.Math.floor;
 
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 import calculator.Calculator;
 import calculator.Goods;
@@ -84,15 +85,20 @@ public class Main {
         double ret = .0;
 
         try {
+            Consumer<String> checkInput = (input) -> {
+                String[] doubleParts = input.split("\\.");
+                if (doubleParts.length == 1 || (doubleParts.length > 1 && doubleParts[1].length() != 2)) {
+                    throw new IllegalStateException();
+                }
+            };
+
             String input = scanner.nextLine();
             double inputConverted = Double.parseDouble(input);
-            String[] doubleParts = input.split("\\.");
-            if (doubleParts.length == 1 || (doubleParts.length > 1 && doubleParts[1].length() != 2)) {
-                throw new IllegalStateException();
-            }
+            checkInput.accept(input);
             while (inputConverted < 0) {
                 System.out.println(MESSAGE_INVALID_INPUT_NEGATIVE_PRICE);
                 input = scanner.nextLine();
+                checkInput.accept(input);
                 inputConverted = Double.parseDouble(input);
             }
             ret = inputConverted;
